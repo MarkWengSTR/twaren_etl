@@ -11,14 +11,6 @@ def date_string_to_epoch(date: str) -> float:
     return datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ').timestamp()
 
 
-def convert_date_epoch(documents, convert_func, convert_fields=SYSLOG_TIME_FIELDS):
-    for docu in documents:
-        for field in convert_fields:
-            docu["_source"][field] = convert_func(docu["_source"][field])
-
-    return documents
-
-
 def pre_date_list(days=0) -> list:
     return list(
         map(
@@ -154,10 +146,6 @@ def scan(ctx):
     ctx["search_result"] = list(
         elasticsearch.helpers.scan(
             es, index=search_properties["index"], preserve_order=True, query=search_properties["body"]))
-
-    if search_properties["index"].find("syslog") >= 0:
-        ctx["search_result"] = convert_date_epoch(
-            ctx["search_result"], date_string_to_epoch)
 
     return ctx
 
