@@ -11,21 +11,23 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 if __name__ == "__main__":
+    ctx = {
+        "data_es_object": None,
+        "analy_es_object": None,
+        "is_created_new_index": None,
+        "index_properties": es_idx_prop.twaren_device,
+        "search_properties": None,
+        "search_result": None,
+        "override_index_name": "twaren_asr_device"
+    }
+    ctx = ob.prepare_all(ctx) and \
+        idx.create_process(ctx)
+
     for day_range in es_search.time_range_from_now_props_list("d", 3):
         search_properties = es_search.replace_range_prop(
             es_search_prop.twaren_asr_device, day_range)
 
-        ctx = {
-            "data_es_object": None,
-            "analy_es_object": None,
-            "is_created_new_index": None,
-            "index_properties": es_idx_prop.twaren_device,
-            "search_properties": search_properties,
-            "search_result": None,
-            "override_index_name": "twaren_asr_device"
-        }
+        ctx["search_properties"] = search_properties
 
-        ob.prepare_all(ctx) and \
-            idx.create_process(ctx) and \
-            es_search.scan(ctx) and \
+        es_search.scan(ctx) and \
             es_bulk.bulk_from_scan(ctx)
