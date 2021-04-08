@@ -2,7 +2,7 @@ from unittest import TestCase
 from etl_twaren.es_api.search import time_range_from_now_props_list, replace_range_prop
 
 
-class TestSearch(TestCase):
+class TestDevicesDataMigrate(TestCase):
     def test_time_range_from_now_props_list(self):
         self.assertEqual(
             time_range_from_now_props_list("d", 3),
