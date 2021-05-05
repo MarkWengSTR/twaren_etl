@@ -30,6 +30,3 @@ if __name__ == "__main__":
             es_search.scan(ctx) and \
             es_bulk.bulk_from_scan(ctx) and \
             time.sleep(300)
-
-    # ob.prepare_all(ctx) and \
-    #     mlad.process(ctx)

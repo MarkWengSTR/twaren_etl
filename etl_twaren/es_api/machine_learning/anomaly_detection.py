@@ -91,9 +91,9 @@ def get_records(mlad_ctx):
 
 def process(ctx):
     mlad_ctx = {
-        "job_id": "test_job_over_device_no_partial",
-        "datafeed_id": "test_job_over_device_no_partial",
-        "datafeed_indices": ["nms-devices_status-test-*"],
+        "job_id": "device_status_2",
+        "datafeed_id": "device_status_2",
+        "datafeed_indices": ["nms-devices*"],
         "es_object": ctx["analy_es_object"],
         "mlad_properties": ctx["mlad_properties"],
         "ad_result": None
@@ -112,7 +112,7 @@ def process(ctx):
 
 def get_resutl_process(ctx):
     mlad_ctx = {
-        "job_id": "device_status_1",
+        "job_id": "device_status_2",
         "es_object": ctx["analy_es_object"],
         "mlad_properties": ctx["mlad_properties"],
         "ad_result": None
