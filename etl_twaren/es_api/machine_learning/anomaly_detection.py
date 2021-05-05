@@ -54,10 +54,11 @@ def stop_datafeed(mlad_ctx):
 
 
 def get_records(mlad_ctx):
+    job_id = mlad_ctx["job_id"]
     mlad_properties = mlad_ctx["mlad_properties"]
 
     result = MlClient.get_records(
-        mlad_ctx["es_object"], job_id=mlad_properties["job_id"], body=mlad_properties["get_records_params"])
+        mlad_ctx["es_object"], job_id=job_id, body=mlad_properties["get_records_params"])
 
     """
     {"count":904,"records":[
@@ -105,5 +106,20 @@ def process(ctx):
 
     # get_records(mlad_ctx) # get ml analysis result
     # ctx["mlad_result"] = mlad_ctx["ad_result"]
+
+    return ctx
+
+
+def get_resutl_process(ctx):
+    mlad_ctx = {
+        "job_id": "device_status_1",
+        "es_object": ctx["analy_es_object"],
+        "mlad_properties": ctx["mlad_properties"],
+        "ad_result": None
+    }
+
+    get_records(mlad_ctx)  # get ml analysis result
+
+    ctx["mlad_result"] = mlad_ctx["ad_result"]
 
     return ctx
