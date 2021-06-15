@@ -95,3 +95,41 @@ twaren_device = {
         }
     }
 }
+
+twaren_netflow = {
+    "name": "inms-devices_netflow",
+    "body": {
+        "settings": {
+            "number_of_shards": 1,
+            "number_of_replicas": 1
+        },
+        "mappings": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "Interfaces_id": {
+                    "type": "long"
+                },
+                "Interfaces_device": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "CheckTime": {
+                    "type": "date"
+                },
+                "CurrentInRate": {
+                    "type": "float"
+                },
+                "CurrentOutRate": {
+                    "type": "float"
+                },
+            }
+        }
+    }
+}
