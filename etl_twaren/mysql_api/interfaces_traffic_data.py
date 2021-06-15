@@ -1,8 +1,14 @@
 import db
+import os
+
+SQL_FILE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "sqls\\interfaces_traffic_data.sql"
+)
 
 
 def interfaces_tracfic_datagrid_query():
-    with open("sqls\\interfaces_traffic_data.sql", "r") as sql_file:
+    with open(SQL_FILE, "r") as sql_file:
         db_ctx = {
             "db_conn": None,
             "db_cursor": None,

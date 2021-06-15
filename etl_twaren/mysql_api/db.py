@@ -1,12 +1,15 @@
 import pymysql
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def dbconn_prepare(db_ctx):
     db_conn = pymysql.connect(
         cursorclass=pymysql.cursors.DictCursor,
-        host="192.168.3.39",
-        user="inms",
-        password="twaren.net",
+        host=os.getenv("TWAREN_DB_HOST"),
+        user=os.getenv("TWAREN_DB_USER"),
+        password=os.getenv("TWAREN_DB_POSSWORD"),
         db="NetFlow")
 
     db_ctx["db_conn"] = db_conn
