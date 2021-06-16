@@ -1,4 +1,4 @@
-use NetFlow;
+/* use NetFlow; */
 
 SELECT Interfaces.Interfaces_id, Interfaces.Interfaces_device, Interfaces.Interfaces_description,
        DATE_FORMAT(Interfaces_Traffic.CheckTime, '%Y-%m-%d %H:%i:%s')  AS CheckTime,

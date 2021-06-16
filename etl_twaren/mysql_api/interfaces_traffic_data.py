@@ -1,4 +1,4 @@
-import db
+import mysql_api.db as db
 import os
 
 SQL_FILE = os.path.join(

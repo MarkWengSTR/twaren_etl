@@ -30,14 +30,14 @@ import csv
 # ]
 
 
-def reformat_for_bulk(docu):
+def reformat_from_scan_for_bulk(docu):
     return [
         {"index": {"_id": docu["_id"]}},
         docu["_source"]
     ]
 
 
-def reformat_source(docu):
+def reformat_from_scan_for_csv(docu):
     return [
         docu["_source"]
     ]
@@ -52,7 +52,7 @@ def bulk_to_csv(ctx):
     documents = ctx["search_result"]
 
     if documents:
-        result = posts_reformat(documents, reformat_source)
+        result = posts_reformat(documents, reformat_from_scan_for_csv)
         col_names = result[0].keys()
 
         with open("test.csv", "w", newline="") as out_file:
@@ -68,8 +68,22 @@ def bulk_from_scan(ctx):
 
     if documents:
         ctx["analy_es_object"].bulk(
-            posts_reformat(documents, reformat_for_bulk),
+            posts_reformat(documents, reformat_from_scan_for_bulk),
             index=ctx.get("index_properties", {}).get("name") or ctx["override_index_name"] or documents[0]["_index"])
+    # expect documents have only one index
+
+    return ctx
+
+
+def bulk_from_mysql(ctx):
+    db_records = ctx["search_result"]
+
+    if db_records:
+        for record in db_records:
+            ctx["analy_es_object"].index(index=ctx.get(
+                "index_properties", {}).get("name") or ctx["override_index_name"],
+                body=record
+            )
     # expect documents have only one index
 
     return ctx
@@ -80,7 +94,7 @@ def bulk_from_search(ctx):
 
     if documents:
         ctx["analy_es_object"].bulk(
-            posts_reformat(documents, reformat_for_bulk),
+            posts_reformat(documents, reformat_from_scan_for_bulk),
             index=ctx.get("index_properties", {}).get("name") or ctx["override_index_name"] or documents[0]["_index"])
     # expect documents have only one index
 

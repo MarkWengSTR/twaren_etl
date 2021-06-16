@@ -8,6 +8,4 @@ data_es = {
 
 ml_es = {
     "end_point": os.getenv("ML_ES_END_POINT"),
-    "user": os.getenv("ML_ES_USER"),
-    "password": os.getenv("ML_ES_PASSWORD"),
 }
