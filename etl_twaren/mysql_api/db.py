@@ -1,6 +1,7 @@
 import pymysql
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 load_dotenv()
 
 
@@ -18,10 +19,20 @@ def dbconn_prepare(db_ctx):
     return db_ctx
 
 
+def reformat_time(records):
+    for record in records:
+        record["CheckTime"] = datetime.strptime(
+            record["CheckTime"], '%Y-%m-%d %H:%M:%S')
+
+    return records
+
+
 def query_all(db_ctx):
     try:
         db_ctx["db_cursor"].execute(db_ctx["sql"])
-        db_ctx["result"] = db_ctx["db_cursor"].fetchall()
+        db_ctx["result"] = reformat_time(
+            db_ctx["db_cursor"].fetchall()
+        )
     except Exception:
         print("Error: unable to fetch data")
 
