@@ -1,5 +1,6 @@
 import functools
 import csv
+from datetime import datetime
 
 # documents = [
 #     {"index": {"_id": "dev001-1611214501578"}},
@@ -35,6 +36,21 @@ def reformat_from_scan_for_bulk(docu):
         {"index": {"_id": docu["_id"]}},
         docu["_source"]
     ]
+
+
+# for bulk #
+# def reformat_from_mysql_for_bulk(db_record):
+#     db_record["@timestamp"] = datetime.now()
+
+#     return [
+#         {"index": {"_id": "inms-netflow-%f" % (datetime.now().timestamp())}},
+#         db_record
+#     ]
+
+def timestamp_record_from_mysql(db_record):
+    db_record["@timestamp"] = datetime.now()
+
+    return db_record
 
 
 def reformat_from_scan_for_csv(docu):
@@ -82,9 +98,11 @@ def bulk_from_mysql(ctx):
         for record in db_records:
             ctx["analy_es_object"].index(index=ctx.get(
                 "index_properties", {}).get("name") or ctx["override_index_name"],
-                body=record
+                body=timestamp_record_from_mysql(record)
             )
-    # expect documents have only one index
+        # ctx["analy_es_object"].bulk(
+        #     posts_reformat(db_records, reformat_from_mysql_for_bulk),
+        #     index=ctx.get("index_properties", {}).get("name") or ctx["override_index_name"])
 
     return ctx
 

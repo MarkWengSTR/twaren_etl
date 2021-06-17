@@ -97,7 +97,7 @@ twaren_device = {
 }
 
 twaren_netflow = {
-    "name": "inms-devices_netflow",
+    "name": "inms-devices-netflow",
     "body": {
         "settings": {
             "number_of_shards": 1,
