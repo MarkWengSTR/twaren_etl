@@ -3,7 +3,7 @@ import os
 
 SQL_FILE = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    "sqls\\interfaces_traffic_data.sql"
+    "sqls/interfaces_traffic_data.sql"
 )
 
 
