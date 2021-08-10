@@ -17,8 +17,8 @@ def interfaces_tracfic_datagrid_query():
         }
         db_ctx["sql"] = sql_file.read()
 
-        db.dbconn_prepare(db_ctx) and \
-            db.query_all(db_ctx)
+        db.twaren_dbconn_prepare(db_ctx) and \
+            db.query_netflow(db_ctx)
 
     return db_ctx
 

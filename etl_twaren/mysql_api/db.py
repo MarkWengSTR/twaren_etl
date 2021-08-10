@@ -5,7 +5,7 @@ from datetime import datetime
 load_dotenv()
 
 
-def dbconn_prepare(db_ctx):
+def twaren_dbconn_prepare(db_ctx):
     db_conn = pymysql.connect(
         cursorclass=pymysql.cursors.DictCursor,
         host=os.getenv("TWAREN_DB_HOST"),
@@ -19,19 +19,20 @@ def dbconn_prepare(db_ctx):
     return db_ctx
 
 
-def reformat_time(records):
+def reformat_time(records, time_field):
     for record in records:
-        record["CheckTime"] = datetime.strptime(
-            record["CheckTime"], '%Y-%m-%d %H:%M:%S')
+        record[time_field] = datetime.strptime(
+            record[time_field], '%Y-%m-%d %H:%M:%S')
 
     return records
 
 
-def query_all(db_ctx):
+def query_netflow(db_ctx):
     try:
         db_ctx["db_cursor"].execute(db_ctx["sql"])
         db_ctx["result"] = reformat_time(
-            db_ctx["db_cursor"].fetchall()
+            db_ctx["db_cursor"].fetchall(),
+            "CheckTime"
         )
     except Exception:
         print("Error: unable to fetch data")
