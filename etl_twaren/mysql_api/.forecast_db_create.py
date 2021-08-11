@@ -44,8 +44,8 @@ def create_forecast_table(db_ctx):
 def create_forecast_test_datas(db_ctx):
     sql = """
         INSERT INTO `forecast_data` (`metric`, `job_id`) VALUES
-        ('CurrentInRate', 'achpFXsBMasMJgE72M5U'),
-        ('CurrentOutRate', 'ccdaFXsBMasMJgE98C1X')
+        ('CurrentInRate', 'testCurrentInRate123'),
+        ('CurrentOutRate', 'testCurrentOutRate456')
     """
 
     db_ctx["datas_create_res"] = db_ctx["db_cursor"].execute(sql)
