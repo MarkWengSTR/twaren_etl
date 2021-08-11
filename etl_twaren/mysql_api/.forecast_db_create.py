@@ -28,13 +28,29 @@ def create_forecast_table(db_ctx):
     sql = """
         CREATE TABLE IF NOT EXISTS forecast_data(
         id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        metric VARCHAR(10),
-        job_id VARCHAR(20),
+        metric VARCHAR(50),
+        job_id VARCHAR(50),
         create_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )
     """
 
     db_ctx["table_create_res"] = db_ctx["db_cursor"].execute(sql)
+
+    db_ctx["db_conn"].commit()
+
+    return db_ctx
+
+
+def create_forecast_test_datas(db_ctx):
+    sql = """
+        INSERT INTO `forecast_data` (`metric`, `job_id`) VALUES
+        ('CurrentInRate', 'achpFXsBMasMJgE72M5U'),
+        ('CurrentOutRate', 'ccdaFXsBMasMJgE98C1X')
+    """
+
+    db_ctx["datas_create_res"] = db_ctx["db_cursor"].execute(sql)
+
+    db_ctx["db_conn"].commit()
 
     return db_ctx
 
@@ -43,10 +59,11 @@ if __name__ == "__main__":
     ctx = {
         "db_conn": None,
         "db_cursor": None,
-        "db_create_res": None,
-        "table_create_res": None
+        "table_create_res": None,
+        "datas_create_res": None
     }
 
     dbconn_prepare(ctx) and \
         create_forecast_table(ctx) and \
+        create_forecast_test_datas(ctx) and \
         print(ctx)
