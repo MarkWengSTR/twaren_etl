@@ -20,7 +20,11 @@ def query_forecast_job_id(db_ctx):
 
 def insert_forecast_record(db_ctx):
     sql = """INSERT INTO `forecast_data` (`metric`, `job_id`, `create_time`) VALUES
-        ('{0}', '{1}', '{2}')""".format(db_ctx["metric"], db_ctx["forecast_job_id"], db_ctx["forecast_job_time"])
+        ('{0}', '{1}', '{2}')""".format(
+        db_ctx["forecast"]["metric"],
+        db_ctx["forecast"]["job_id"],
+        db_ctx["forecast"]["job_time"]
+    )
 
     try:
         db_ctx["db_cursor"].execute(sql)

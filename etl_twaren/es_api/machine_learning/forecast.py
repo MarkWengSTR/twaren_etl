@@ -12,8 +12,8 @@ def forecast_job(ctx):
         })
 
     if forecast_result and forecast_result["acknowledged"]:
-        ctx["forecast_job_id"] = forecast_result["forecast_id"]
-        ctx["forecast_job_time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        ctx["forecast"]["job_id"] = forecast_result["forecast_id"]
+        ctx["forecast"]["job_time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     else:
         ctx = forecast_job(ctx)
 
