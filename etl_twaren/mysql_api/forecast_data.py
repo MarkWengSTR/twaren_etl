@@ -1,3 +1,18 @@
+import os
+import mysql_api.db as db
+
+DB_PROPS = {
+    "db_props": {
+        "host": os.getenv("FORECAST_DB_HOST"),
+        "user": os.getenv("FORECAST_DB_USER"),
+        "password": os.getenv("FORECAST_DB_PASSWORD"),
+        "name": "forecast_inms"
+    },
+    "db_conn": None,
+    "db_cursor": None
+}
+
+
 def query_forecast_job_id(db_ctx):
     """
     find forecast job id by metric
@@ -23,18 +38,18 @@ def insert_forecast_record(db_ctx):
         ('{0}', '{1}', '{2}')""".format(
         db_ctx["forecast"]["metric"],
         db_ctx["forecast"]["job_id"],
-        db_ctx["forecast"]["job_time"]
+        db.reformat_time_str(db_ctx["forecast"]["job_time"], "%m/%d/%Y, %H:%M:%S")
     )
 
     try:
-        db_ctx["db_cursor"].execute(sql)
+        db_props = db.dbconn_prepare(DB_PROPS)
 
-        db_ctx["db_conn"].commit()
+        db_props["db_cursor"].execute(sql)
+        db_props["db_conn"].commit()
     except Exception:
         print("Error: unable to insert data")
 
     return db_ctx
-
 
 ###
 # test

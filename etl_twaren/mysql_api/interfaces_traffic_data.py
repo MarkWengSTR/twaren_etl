@@ -6,39 +6,33 @@ SQL_FILE = os.path.join(
     "sqls/interfaces_traffic_data.sql"
 )
 
-
-def query_netflow(db_ctx):
-    try:
-        db_ctx["db_cursor"].execute(db_ctx["sql"])
-        db_ctx["result"] = db.reformat_time_field(
-            db_ctx["db_cursor"].fetchall(),
-            "CheckTime"
-        )
-    except Exception:
-        print("Error: unable to fetch data")
-
-    return db_ctx
+DB_PROPS = {
+    "db_props": {
+        "host": os.getenv("TWAREN_DB_HOST"),
+        "user": os.getenv("TWAREN_DB_USER"),
+        "password": os.getenv("TWAREN_DB_POSSWORD"),
+        "name": "NetFlow"
+    },
+    "db_conn": None,
+    "db_cursor": None
+}
 
 
-def interfaces_tracfic_datagrid_query():
+def query_netflow():
+    db_ctx = db.dbconn_prepare(DB_PROPS)
+
     with open(SQL_FILE, "r") as sql_file:
-        db_ctx = {
-            "props": {
-                "host": os.getenv("TWAREN_DB_HOST"),
-                "user": os.getenv("TWAREN_DB_USER"),
-                "password": os.getenv("TWAREN_DB_POSSWORD"),
-                "name": "NetFlow"
-            },
-            "db_conn": None,
-            "db_cursor": None,
-            "sql": sql_file.read(),
-            "result": {}
-        }
+        try:
+            db_ctx["db_cursor"].execute(sql_file.read())
+            result = db.reformat_all_time_field(
+                db_ctx["db_cursor"].fetchall(),
+                "CheckTime",
+                "%Y-%m-%d %H:%M:%S"
+            )
+        except Exception:
+            print("Error: unable to fetch data")
 
-        db.dbconn_prepare(db_ctx) and \
-            query_netflow(db_ctx)
-
-    return db_ctx
+    return result
 
 
-print(interfaces_tracfic_datagrid_query())
+print(query_netflow())

@@ -16,7 +16,7 @@ if __name__ == "__main__":
         "analy_es_object": None,
         "is_created_new_index": None,
         "index_properties": es_idx_prop.twaren_netflow,
-        "search_result": sql_traffic_data.interfaces_tracfic_datagrid_query()["result"],
+        "search_result": sql_traffic_data.query_netflow(),
         "mlad_properties": None,
         "mlad_result": None
     }
