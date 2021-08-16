@@ -27,10 +27,3 @@ def reformat_all_time_field(records, time_field, ori_format):
         record[time_field] = reformat_time_str(record[time_field], ori_format)
 
     return records
-
-# def reformat_all_time_field(records, time_field, ori_format):
-#     for record in records:
-#         record[time_field] = datetime.strptime(
-#             record[time_field], '%Y-%m-%d %H:%M:%S')
-
-#     return records

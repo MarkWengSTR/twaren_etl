@@ -1,3 +1,7 @@
+ML_JOB_METRIC_MAPPING = {
+    "inms-real-time-current-in-15m": "CurrentInRate"
+}
+
 anomaly_detect_twaren_device = {
     "job_id": "must assign",
     "job_body": {

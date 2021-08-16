@@ -17,17 +17,24 @@ def query_forecast_job_id(db_ctx):
     """
     find forecast job id by metric
     """
+    metric = db_ctx["forecast"]["metric"]
 
     sql = """SELECT job_id
         FROM forecast_data
         WHERE metric = '{0}'
         ORDER BY create_time DESC
-        LIMIT 1""".format(db_ctx["metric"])
+        LIMIT 1""".format(metric)
 
     try:
-        db_ctx["db_cursor"].execute(sql)
-        db_ctx["result"] = db_ctx["db_cursor"].fetchall()
+        db_props = db.dbconn_prepare(DB_PROPS)
+
+        db_props["db_cursor"].execute(sql)
+
+        db_ctx["forecast"]["job_id"] = db_props["db_cursor"].fetchall()[0]["job_id"]
+
+        db_ctx["db_query"] = True
     except Exception:
+        db_ctx["db_query"] = False
         print("Error: unable to fetch data")
 
     return db_ctx
@@ -38,7 +45,7 @@ def insert_forecast_record(db_ctx):
         ('{0}', '{1}', '{2}')""".format(
         db_ctx["forecast"]["metric"],
         db_ctx["forecast"]["job_id"],
-        db.reformat_time_str(db_ctx["forecast"]["job_time"], "%m/%d/%Y, %H:%M:%S")
+        db.reformat_time_str(db_ctx["forecast"]["job_time"], "%Y-%m-%d %H:%M:%S")
     )
 
     try:
@@ -50,6 +57,7 @@ def insert_forecast_record(db_ctx):
         print("Error: unable to insert data")
 
     return db_ctx
+
 
 ###
 # test
