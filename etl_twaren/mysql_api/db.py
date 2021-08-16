@@ -1,5 +1,4 @@
 import pymysql
-import os
 from dotenv import load_dotenv
 from datetime import datetime
 load_dotenv()
@@ -8,10 +7,10 @@ load_dotenv()
 def dbconn_prepare(db_ctx):
     db_conn = pymysql.connect(
         cursorclass=pymysql.cursors.DictCursor,
-        host=os.getenv("TWAREN_DB_HOST"),
-        user=os.getenv("TWAREN_DB_USER"),
-        password=os.getenv("TWAREN_DB_POSSWORD"),
-        db="NetFlow")
+        host=db_ctx["db_props"]["host"],
+        user=db_ctx["db_props"]["user"],
+        password=db_ctx["db_props"]["password"],
+        db=db_ctx["db_props"]["name"])
 
     db_ctx["db_conn"] = db_conn
     db_ctx["db_cursor"] = db_conn.cursor()
@@ -19,21 +18,12 @@ def dbconn_prepare(db_ctx):
     return db_ctx
 
 
-def reformat_time(records):
+def reformat_time_str(time_str, ori_format):
+    return datetime.strptime(time_str, ori_format)
+
+
+def reformat_all_time_field(records, time_field, ori_format):
     for record in records:
-        record["CheckTime"] = datetime.strptime(
-            record["CheckTime"], '%Y-%m-%d %H:%M:%S')
+        record[time_field] = reformat_time_str(record[time_field], ori_format)
 
     return records
-
-
-def query_all(db_ctx):
-    try:
-        db_ctx["db_cursor"].execute(db_ctx["sql"])
-        db_ctx["result"] = reformat_time(
-            db_ctx["db_cursor"].fetchall()
-        )
-    except Exception:
-        print("Error: unable to fetch data")
-
-    return db_ctx

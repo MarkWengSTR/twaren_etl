@@ -48,6 +48,53 @@ twaren_asr_syslog = {
     }
 }
 
+
+forecast_data = {
+    "index": ".ml-anomalies-shared",
+    "body": {
+        "query": {
+            "bool": {
+                "filter": [
+                    {
+                        "query_string": {
+                            "query": "result_type:model_forecast"
+                        }
+                    },
+                    {
+                        "query_string": {
+                            "query": "job_id:inms-real-time-current-in-15m"
+                        }
+                    },
+                    {
+                        "query_string": {
+                            "query": "forecast_id:eMkXPnsBMasMJgE74t0i"
+                        }
+                    },
+                    {"range": {
+                        "timestamp": {
+                            "gte": "now/m",
+                            "lt": "now+15m/m"
+                        }
+                    }}
+                ],
+                "must": [
+                    {"regexp": {
+                        "partition_field_value": ".*2671UD80004.*"
+                    }}
+                ]
+            }
+        }
+    }
+}
+
+
+def forecast_15m_es_props_setting(ml_job_id, forecast_id, device_searcher):
+    forecast_data["body"]["query"]["bool"]["filter"][1]["query_string"]["query"] = "job_id:" + ml_job_id
+    forecast_data["body"]["query"]["bool"]["filter"][2]["query_string"]["query"] = "forecast_id:" + forecast_id
+    forecast_data["body"]["query"]["bool"]["must"][0]["regexp"]["partition_field_value"] = device_searcher
+
+    return forecast_data
+
 # "body": {
 #     "size": 10000,
 # }

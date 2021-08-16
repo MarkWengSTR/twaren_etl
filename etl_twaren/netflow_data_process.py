@@ -1,5 +1,4 @@
 import logging
-import time
 
 import es_api.object as ob
 import es_api.index as idx
@@ -12,18 +11,17 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 if __name__ == "__main__":
-    while True:
-        ctx = {
-            "sql_data": None,
-            "analy_es_object": None,
-            "is_created_new_index": None,
-            "index_properties": es_idx_prop.twaren_netflow,
-            "search_result": sql_traffic_data.interfaces_tracfic_datagrid_query()["result"],
-            "mlad_properties": None,
-            "mlad_result": None
-        }
+    ctx = {
+        "sql_data": None,
+        "analy_es_object": None,
+        "is_created_new_index": None,
+        "index_properties": es_idx_prop.twaren_netflow,
+        "search_result": sql_traffic_data.query_netflow(),
+        "mlad_properties": None,
+        "mlad_result": None
+    }
 
-        ob.prepare_all(ctx) and \
-            idx.create_process(ctx) and \
-            es_bulk.bulk_from_mysql(ctx) and\
-            time.sleep(300)
+    ob.prepare_all(ctx) and \
+        idx.create_process(ctx) and \
+        es_bulk.bulk_from_mysql(ctx) and\
+        print(ctx)
