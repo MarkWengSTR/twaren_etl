@@ -1,5 +1,6 @@
 ML_JOB_METRIC_MAPPING = {
-    "inms-real-time-current-in-15m": "CurrentInRate"
+    "inms-real-time-current-in-15m": "CurrentInRate",
+    "inms-real-time-current-out-15m": "CurrentOutRate"
 }
 
 anomaly_detect_twaren_device = {

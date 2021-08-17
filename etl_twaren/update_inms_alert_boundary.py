@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import es_api.object as ob
 import es_properties.machine_learning as es_ml_prop
 
@@ -14,10 +16,31 @@ TRAFFIC_ID_DEVICE_KEYWORD_MAPPING = {
 }
 
 
-def extract_forecast_data_to_inms(ctx):
+def update_inms_netflow_data(ctx):
+    if ctx["forecast"]["metric"] == "CurrentInRate":
+        extract_data_to_inms_traf_in(ctx) and \
+            inms_netflow_sql.update_traffic_in_bound(ctx)
+    else:
+        extract_data_to_inms_traf_out(ctx) and \
+            inms_netflow_sql.update_traffic_out_bound(ctx)
+
+    return ctx
+
+
+def extract_data_to_inms_traf_in(ctx):
     data = ctx["forecast"]["result"]["hits"]["hits"][0]["_source"]
 
-    ctx["inms_traffic"]["upper_bound"] = data["forecast_upper"]
+    ctx["inms_traffic_in"]["upper_bound"] = data["forecast_upper"]
+    ctx["inms_traffic_in"]["lower_bound"] = data["forecast_lower"]
+
+    return ctx
+
+
+def extract_data_to_inms_traf_out(ctx):
+    data = ctx["forecast"]["result"]["hits"]["hits"][0]["_source"]
+
+    ctx["inms_traffic_out"]["upper_bound"] = data["forecast_upper"]
+    ctx["inms_traffic_out"]["lower_bound"] = data["forecast_lower"]
 
     return ctx
 
@@ -28,6 +51,7 @@ if __name__ == "__main__":
             device_searcher = ".*" + device_keyword + ".*"
 
             ctx = {
+                "job_query_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "analy_es_object": None,
                 "ml_job_id": ml_job_id,
                 "forecast": {
@@ -36,15 +60,21 @@ if __name__ == "__main__":
                     "device_searcher": device_searcher,
                     "result": None
                 },
-                "inms_traffic": {
+                "inms_traffic_in": {
                     "id": traffic_id,
-                    "upper_bound": ""
+                    "upper_bound": "",
+                    "lower_bound": ""
+                },
+                "inms_traffic_out": {
+                    "id": traffic_id,
+                    "upper_bound": "",
+                    "lower_bound": ""
                 }
             }
 
             ob.prepare_all(ctx) and \
                 fc_local_sql.query_forecast_job_id(ctx) and \
                 fc_es.search_forecast_data(ctx) and \
-                extract_forecast_data_to_inms(ctx) and \
-                inms_netflow_sql.update_traffic_bound(ctx) and \
+                extract_data_to_inms_traf_in(ctx) and \
+                update_inms_netflow_data(ctx) and \
                 print(ctx)
